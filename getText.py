@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import csv
+#爬取页面获得comment的json文件
 def getHtmlText(url):
     try:
         kv={"User-Agent":"Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0",
@@ -13,13 +14,13 @@ def getHtmlText(url):
         return r.content
     except:
         print("页面爬取失败！")
-
+#将json文件转化成python对象并将需要的commentid、nick、eachComment保存进info
 def loadText(html,info):
     jsText=json.loads(html)
     commonData = jsText["comment"]["commentlist"]
     for eachComment in commonData:
         info.append([eachComment["commentid"], eachComment["nick"], eachComment["rootcommentcontent"]])
-
+#将保存的info分别存进txt和csv文件
 def  writeInfo(info):
     with open(r"C:\Users\john\Desktop\jay.txt","a",encoding="utf-8") as f:
         for item in info:
@@ -29,7 +30,7 @@ def  writeInfo(info):
         csvWriter=csv.writer(f)
         for row in info:
             csvWriter.writerow(row)
-
+#主函数，调用上述函数，其中页面共五页，循环全部下载
 def main():
     info = []
     for i in range(5):
@@ -37,7 +38,7 @@ def main():
         html=getHtmlText(url)
         loadText(html,info)
     writeInfo(info)
-
+#执行主函数
 if __name__ == "__main__":
     main()
 
